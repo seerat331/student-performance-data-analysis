@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+ 
+sns.set(style='whitegrid')
+df=pd.read_csv("StudentsPerformance.csv.xls")
+# print(df.head())
+# print(df.info())
+# # ------for missing values-------
+# print(df.isnull().sum())
+
+# renmae the column for simplicity
+df.columns=[col.replace(" ","_").lower() for col in df.columns]
+print(df.columns)
+# adding new column
+df["average_numbers"]=df[["math_score","reading_score","writing_score"]].mean(axis=1)
+# print(df.head())
+# # here is descriptive statics
+# print(df.describe())
+
+# data visualization
+# sns.countplot(data=df,x="gender",palette="Set3")
+# plt.title("Gender distribution")
+# plt.show()
+
+# # average score by Gender
+# sns.barplot(data=df,x="gender",y="average_numbers",palette="Set1")
+# plt.title("Average score by Gender")
+# plt.show()
+# # effect of parental education
+# sns.boxplot(data=df,x="parental_level_of_education",y="average_numbers")
+# plt.title("Parental Education vs Student performance")
+# plt.show()
+# # test preparation course impact
+# sns.violinplot(data=df,x="test_preparation_course",y="average_numbers") 
+# plt.title("Impact of Test Preparation Course on Performance")
+# plt.show()
+# # co relation heatmap
+# corr=df.select_dtypes(include=np.number).corr()
+# sns.heatmap(corr, annot=True,cmap="Blues")
+# plt.title("Correlation Between scores")
+# plt.show()
+#numeric insights such as (Numpy+Pandas)
+print(df.groupby("gender")["average_numbers"].mean())
+
+top_student=df.loc[df["average_numbers"].idxmax()]
+print("Top Student Record:\n",top_student)
+
+# numpy calculation
+mean_math=np.mean(df["math_score"])
+std_math=np.std(df["math_score"])
+print(f"Mean Math Score:{mean_math:.2f},Standard Deviation:{std_math:.2f}")
+# matplot lib custom plot
+subject=["math_score","reading_score","writing_score"]
+averages=[df[s].mean() for s in subject]
+plt.figure(figsize=(6,4))
+plt.bar(subject,averages,color=["#6a5acd","#00bfff","#ff69b4"])
+plt.title("Average Score by Suject")
+plt.xlabel("Subject")
+plt.ylabel("Average Marks")
+plt.show()
+# save and clean data
+df.to_csv("clean_student_data.csv",index=False)
+print("Clean dataset saved successfully")
+
